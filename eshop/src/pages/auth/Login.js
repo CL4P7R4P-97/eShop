@@ -9,6 +9,8 @@ import {auth} from '../../firebase/config';
 import { GoogleAuthProvider, signInWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
 import { ToastContainer, toast } from 'react-toastify';
 import { selectUsername } from '../../redux/slice/authSlice';
+import { selectPreviousURL } from '../../redux/slice/cartSlice';
+import { useSelector } from 'react-redux';
 const Login = () => {
 
 
@@ -16,9 +18,9 @@ const Login = () => {
     const [password, setPassword] = useState("");
 
     const [isLoading, setIsLoading]  = useState(false);
-    const naviagate = useNavigate();
+    const navigate = useNavigate();
     const provider = new GoogleAuthProvider();
-
+    const previousURL = useSelector(selectPreviousURL);
     const loginWithGoogle =()=>{
 
         setIsLoading(true);
@@ -31,7 +33,12 @@ const Login = () => {
           const user = result.user;
           toast.success("Welcome !"  );
     setIsLoading(false);
-     naviagate('/');
+    if(previousURL){
+      window.location.href = previousURL;
+     }
+     else{
+      navigate('/');
+     }
           // IdP data available using getAdditionalUserInfo(result)
           // ...
         }).catch((error) => {
@@ -57,7 +64,12 @@ const Login = () => {
     const user = userCredential.user;
     toast.success("Welcome !" );
     setIsLoading(false);
-     naviagate('/');
+    if(previousURL){
+      window.location.href = previousURL;
+     }
+     else{
+      navigate('/');
+     }
     // ...
   })
   .catch((error) => {

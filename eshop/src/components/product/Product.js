@@ -1,8 +1,8 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './product.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import useFetchCollection from '../../customHooks/useFetchCollection';
-import { STORE_PRODUCTS, selectProducts } from '../../redux/slice/productSlice';
+import { GET_PRICE_RANGE, STORE_PRODUCTS, selectProducts } from '../../redux/slice/productSlice';
 import ProductFilter from './productFilter/ProductFilter';
 import ProductList from './productList/ProductList';
 import { FaCogs } from 'react-icons/fa';
@@ -11,6 +11,7 @@ const Product = () => {
 
     const {data, isLoading} = useFetchCollection("products");
      
+    const [showFilter, setShowFilter] = useState(false);
     const dispatch = useDispatch();
 
     const products = useSelector(selectProducts);
@@ -20,16 +21,27 @@ const Product = () => {
         dispatch(STORE_PRODUCTS({
             products: data,
         }))
+
+        dispatch(GET_PRICE_RANGE({
+          products: data
+        }))
         
 
     },[dispatch, data]);
 
 
+  const toggleFilter = ()=>{
+
+    setShowFilter(!showFilter);
+  }
+
+
   return (
-    <section>
+    <section >
       <div className={`container ${styles.product}`}>
         <aside
-         
+                 className={showFilter ? `${styles.filter} ${styles.show}` : `${styles.filter}`}
+
         >
           {isLoading ? null : <ProductFilter />}
         </aside>
@@ -44,10 +56,10 @@ const Product = () => {
           ) : (
             <ProductList products={products} />
           )}
-          <div className={styles.icon} >
+          <div className={styles.icon} onClick={toggleFilter} >
             <FaCogs size={20} color="orangered" />
             <p>
-              <b>{}</b>
+              <b>{showFilter ? "Hide Filter" : "Show Filter"}</b>
             </p>
           </div>
         </div>

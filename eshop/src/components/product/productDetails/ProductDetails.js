@@ -1,12 +1,15 @@
 import { doc, getDoc } from 'firebase/firestore';
 import React, { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { db } from '../../../firebase/config';
 import { toast } from 'react-toastify';
 import spinnerImg from '../../../assets/spinner.jpg';
 import styles from './productDetails.module.scss';
 import { useDispatch, useSelector } from 'react-redux';
 import useFetchCollection from '../../../customHooks/useFetchCollection';
+import { ADD_TO_CART, CALCULATE_TOTAL_QUANTITY, DECREASE_CART, selectCartItems } from '../../../redux/slice/cartSlice';
+import Card from '../../card/card';
+import StarsRating from 'react-star-rate';
 
 
 const ProductDetails = () => {
@@ -14,16 +17,17 @@ const ProductDetails = () => {
     const {id} = useParams();
     const[product, setProduct] = useState(null);
     const dispatch = useDispatch();
-    // const cartItems = useSelector(selectCartItems);
-    // const { document } = useFetchDocument("products", id);
-    // const { data } = useFetchCollection("reviews");
-    // const filteredReviews = data.filter((review) => review.productID === id);
   
-    // const cart = cartItems.find((cart) => cart.id === id);
-    // const isCartAdded = cartItems.findIndex((cart) => {
-    //   return cart.id === id;
-    // });
-
+    const cartItems = useSelector(selectCartItems);
+    // const { document } = useFetchDocument("products", id);
+    const { data } = useFetchCollection("reviews");
+    const filteredReviews = data.filter((review) => review.productID === id);
+  
+    const cart = cartItems.find((cart) => cart.id === id);
+    const isCartAdded = cartItems.findIndex((cart) => {
+      return cart.id === id;
+    });
+   const navigate = useNavigate();
     const getProduct = async ()=>{
 
 
@@ -48,13 +52,13 @@ if (!docSnap.exists()) {
   
    
     const addToCart = (product) => {
-    //   dispatch(ADD_TO_CART(product));
-    //   dispatch(CALCULATE_TOTAL_QUANTITY());
+      dispatch(ADD_TO_CART(product));
+      dispatch(CALCULATE_TOTAL_QUANTITY());
     };
   
     const decreaseCart = (product) => {
-    //   dispatch(DECREASE_CART(product));
-    //   dispatch(CALCULATE_TOTAL_QUANTITY());
+      dispatch(DECREASE_CART(product));
+      dispatch(CALCULATE_TOTAL_QUANTITY());
     };
 
   return (
@@ -84,7 +88,7 @@ if (!docSnap.exists()) {
                 </p>
 
                 <div className={styles.count}>
-                  {/* {isCartAdded < 0 ? null : (
+                  {isCartAdded < 0 ? null : (
                     <>
                       <button
                         className="--btn"
@@ -93,7 +97,7 @@ if (!docSnap.exists()) {
                         -
                       </button>
                       <p>
-                        <b>{cart.cartQuantity}</b>
+                        <b>{cart.quantity}</b>
                       </p>
                       <button
                         className="--btn"
@@ -102,24 +106,31 @@ if (!docSnap.exists()) {
                         +
                       </button>
                     </>
-                  )} */}
+                  )}
                 </div>
-                <button
+                {isCartAdded < 0 ? (
+                  <button
                   className="--btn --btn-danger"
                   onClick={() => addToCart(product)}
                 >
                   ADD TO CART
                 </button>
+                ): (<button
+                  className="--btn --btn-danger"
+                  onClick={()=>navigate('/cart')}
+                >
+                  GO TO CART
+                </button>)}
               </div>
             </div>
           </>
         )}
-        {/* <Card cardClass={styles.card}>
+        <Card cardClass={styles.card}>
           <h3>Product Reviews</h3>
           <div>
             {filteredReviews.length === 0 ? (
               <p>There are no reviews for this product yet.</p>
-            ) : (
+            ) : (      
               <>
                 {filteredReviews.map((item, index) => {
                   const { rate, review, reviewDate, userName } = item;
@@ -140,7 +151,7 @@ if (!docSnap.exists()) {
               </>
             )}
           </div>
-        </Card> */}
+        </Card>
       </div>
     </section>
   )

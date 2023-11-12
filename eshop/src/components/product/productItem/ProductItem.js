@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
  
 import styles from "./productItem.module.scss";
 import Card from "../../card/card";
+import { ADD_TO_CART } from "../../../redux/slice/cartSlice";
 
 const ProductItem = ({ product, grid, id, name, price, desc, imageURL }) => {
   const dispatch = useDispatch();
@@ -19,10 +20,10 @@ const ProductItem = ({ product, grid, id, name, price, desc, imageURL }) => {
     return text;
   };
 
-//   const addToCart = (product) => {
-//     dispatch(ADD_TO_CART(product));
-//     dispatch(CALCULATE_TOTAL_QUANTITY());
-//   };
+  const addToCart = (product) => {
+    dispatch(ADD_TO_CART(product));
+    // dispatch(CALCULATE_TOTAL_QUANTITY());
+  };
 
   return (
     <Card cardClass={grid ? `${styles.grid}` : `${styles.list}`}>
@@ -40,7 +41,7 @@ const ProductItem = ({ product, grid, id, name, price, desc, imageURL }) => {
 
         <button
           className="--btn --btn-danger"
-         
+          onClick={()=>addToCart(product)}
         >
           Add To Cart
         </button>

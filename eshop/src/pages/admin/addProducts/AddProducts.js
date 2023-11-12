@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import styles from './addProducts.module.scss';
 import Card from '../../../components/card/card';
 import { deleteObject, getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage';
@@ -59,20 +59,9 @@ const AddProducts = () => {
 
     
 
-    const [product, setProduct]  = useState(initialState);
+    const [product, setProduct]  = useState(productEdit||initialState);
 
-    
-
-    useEffect(()=>{
-
-      if(id === "ADD"){
-        setProduct(initialState);
-      }
-      else{
-        setProduct(productEdit);
-      }
-      console.log(product);
-    },[product])
+   
     const [uploadProgress, setUploadProgress] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
 
