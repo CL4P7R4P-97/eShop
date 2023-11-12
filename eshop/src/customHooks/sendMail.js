@@ -1,6 +1,7 @@
 
 export const SendMail = (body) => {
      
+             console.log(body);
                 fetch('https://tranquil-cocada-3b715c.netlify.app/sendOrderEmail', {
                   method: 'POST',
                   headers: {
