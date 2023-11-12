@@ -5,8 +5,6 @@
 /.pnp
 .pnp.js
 
-# keyfile
-/src/firebase
 
 #products Images
 /src/assets/productsImages
