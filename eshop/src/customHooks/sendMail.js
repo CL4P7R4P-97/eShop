@@ -1,7 +1,7 @@
 
 export const SendMail = (body) => {
      
-                fetch('http://localhost:4242/sendOrderEmail', {
+                fetch('https://tranquil-cocada-3b715c.netlify.app/sendOrderEmail', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
