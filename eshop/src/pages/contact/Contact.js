@@ -13,6 +13,7 @@ const Contact = () => {
     e.preventDefault();
     console.log(form.current);
 
+
     emailjs
       .sendForm(
         process.env.REACT_APP_EMAILJS_SERVICE_ID,

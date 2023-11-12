@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   PaymentElement,
   useStripe,
@@ -20,6 +20,7 @@ import { selectShippingAddress } from "../../redux/slice/checkoutSlice";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { useNavigate } from "react-router-dom";
+import { SendMail } from "../../customHooks/sendMail";
 
 const CheckoutForm = () => {
   const [message, setMessage] = useState(null);
@@ -35,6 +36,62 @@ const CheckoutForm = () => {
   const cartItems = useSelector(selectCartItems);
   const cartTotalAmount = useSelector(selectCartTotalAmount);
   const shippingAddress = useSelector(selectShippingAddress);
+
+  
+
+
+  const handleSendEmail = () => {
+
+    const tableRows = cartItems.map((item, index) => (
+      `<tr style="text-align: center" key=${index}>
+      <td style="border: 1px solid #dddddd; padding: 8px;">${item.name}</td>
+      <td style="border: 1px solid #dddddd; padding: 8px;">${item.quantity}</td>
+      <td style="border: 1px solid #dddddd; padding: 8px;">$${item.price}</td>
+      <td style="border: 1px solid #dddddd; padding: 8px;">$${item.quantity * item.price}</td>
+    </tr>`
+    )).join('');
+    
+    const emailBody = `
+    <div style="background-color: #f3f3f3; padding: 20px; border-radius: 10px;">
+    <p style="font-size: 24px; color: #333;">Order Confirmation</p>
+    
+    <table style="border-collapse: collapse; width: 100%; background-color: #fff; border-radius: 5px; overflow: hidden; margin-top: 20px;">
+      <thead>
+        <tr style="border-bottom: 1px solid #ddd;">
+          <th style="padding: 10px; text-align: left;">Item</th>
+          <th style="padding: 10px; text-align: left;">Quantity</th>
+          <th style="padding: 10px; text-align: left;">Unit Price</th>
+          <th style="padding: 10px; text-align: left;">Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${tableRows}
+      </tbody>
+    </table>
+    
+    <div style="margin-top: 20px;">
+      <h2 style="color: #333;">Shipping Address</h2>
+      <p><strong>Name:</strong> ${shippingAddress.name}</p>
+      <p><strong>Address Line 1:</strong> ${shippingAddress.addressLine1}</p>
+      <p><strong>Address Line 2:</strong> ${shippingAddress.addressLine2}</p>
+      <p><strong>City:</strong> ${shippingAddress.city}</p>
+      <p><strong>State:</strong> ${shippingAddress.state}</p>
+      <p><strong>Zip Code:</strong> ${shippingAddress.zip}</p>
+      <p><strong>Country:</strong> ${shippingAddress.country}</p>
+    </div>
+    
+    <p style="margin-top: 20px; font-size: 18px; color: #333;">Total: $${cartTotalAmount}</p>
+    <p style="margin-top: 10px; font-size: 18px; color: #333;">Thank you for your order! It is confirmed and will be processed shortly.</p>
+  </div>
+
+  `;
+  const body =JSON.stringify({
+    to: userEmail,
+    subject: 'Order Confirmation',
+    body: emailBody,
+  });
+    SendMail(body);
+  };
 
   useEffect(() => {
     if (!stripe) {
@@ -107,6 +164,7 @@ const CheckoutForm = () => {
             setIsLoading(false);
             toast.success("Payment successful");
             saveOrder();
+            handleSendEmail();
           }
         }
       });

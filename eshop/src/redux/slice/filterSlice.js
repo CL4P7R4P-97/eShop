@@ -82,7 +82,7 @@ const filterSlice = createSlice({
 
      if(category === "All" && brand === "All"){
            
-      state.filteredProducts = products;
+      state.filteredProducts = products.filter((product)=>product.price <= price);
      }
 
      else if(brand === "All"){

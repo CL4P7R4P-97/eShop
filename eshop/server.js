@@ -1,7 +1,10 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const nodemailer = require('nodemailer');
+const bodyParser = require('body-parser');
 const stripe = require("stripe")(process.env.STRIPE_PRIVATE_KEY);
+ 
 
 const app = express();
 app.use(cors());
@@ -32,6 +35,37 @@ const calculateOrderAmount = (items) => {
 
   return totalAmount * 100;
 };
+
+app.use(bodyParser.json());
+
+app.post('/sendOrderEmail', (req, res) => {
+
+  console.log("sending mail")
+  const { to, subject, body } = req.body;
+  console.log(body, to, subject);
+  var transporter = nodemailer.createTransport({
+    service: "gmail",
+     
+    auth: {
+      user: process.env.NODEMAILER_USER,
+      pass: process.env.NODEMAILER_PASS
+    }
+  });
+
+  const mailOptions = {
+    from: 'reactShop.com',
+    to,
+    subject,
+    html: body,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return res.status(500).send(error.toString());
+    }
+    res.status(200).send('Email sent: ' + info.response);
+  });
+});
 
 app.post("/create-payment-intent", async (req, res) => {
   const { items, shipping, description } = req.body;
