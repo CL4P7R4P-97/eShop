@@ -58,7 +58,7 @@ const OrderDetails = () => {
               </thead>
               <tbody>
                 {order.cartItems.map((cart, index) => {
-                  const { id, name, price, imageURL, cartQuantity } = cart;
+                  const { id, name, price, imageURL, quantity } = cart;
                   return (
                     <tr key={id}>
                       <td>
@@ -75,8 +75,8 @@ const OrderDetails = () => {
                         />
                       </td>
                       <td>{price}</td>
-                      <td>{cartQuantity}</td>
-                      <td>{(price * cartQuantity).toFixed(2)}</td>
+                      <td>{quantity}</td>
+                      <td>{(price * quantity).toFixed(2)}</td>
                     </tr>
                   );
                 })}
