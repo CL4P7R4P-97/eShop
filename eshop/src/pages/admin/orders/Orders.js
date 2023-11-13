@@ -25,7 +25,7 @@ const Orders = () => {
     navigate(`/admin/order-details/${id}`);
   };
 
-  const filteredOrders = orders.filter((order) => order.userID === userID);
+  const filteredOrders = orders.filter((order) => order.userID === process.env.REACT_APP_ADMIN_USER);
 
   return (
     <section>
