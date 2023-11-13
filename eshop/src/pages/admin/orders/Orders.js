@@ -26,7 +26,7 @@ const Orders = () => {
   };
 
 
-  const filteredOrders = orders.filter((order) => order.userID === userID);
+  const filteredOrders = (userID === process.env.REACT_APP_ADMIN_ID ? orders: orders.filter((order) => order.userID === userID));
   
 
   return (
