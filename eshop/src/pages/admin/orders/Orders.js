@@ -26,7 +26,7 @@ const Orders = () => {
   };
 
 
-  const filteredOrders = (userID === "aky5271@gmail.com" ? orders: orders.filter((order) => order.userID === userID));
+  const filteredOrders = orders.filter((order) => order.userID === userID);
   
 
   return (
