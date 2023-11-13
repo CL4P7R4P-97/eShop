@@ -23,5 +23,5 @@ ReactShop is a feature-rich e-commerce application built with React, Firebase, R
 
 1. **Clone the Repository:**
    ```bash
-   git clone [https://github.com/your-username/react-shop.git](https://github.com/CL4P7R4P-97/eShop)https://github.com/CL4P7R4P-97/eShop
+   git clone https://github.com/CL4P7R4P-97/eShop.git
    cd react-shop
