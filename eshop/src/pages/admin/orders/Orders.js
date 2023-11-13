@@ -13,7 +13,7 @@ const Orders = () => {
   const { data, isLoading } = useFetchCollection("orders");
   const orders = useSelector(selectOrderHistory);
   const userID = useSelector(selectUserID);
-
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -25,7 +25,9 @@ const Orders = () => {
     navigate(`/admin/order-details/${id}`);
   };
 
-  const filteredOrders = orders.filter((order) => order.userID === process.env.REACT_APP_ADMIN_USER);
+
+  const filteredOrders = (userID === "aky5271@gmail.com" ? orders: orders.filter((order) => order.userID === userID));
+  
 
   return (
     <section>
